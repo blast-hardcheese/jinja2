@@ -32,9 +32,9 @@ def write(s, target):
     print("Done!", file=sys.stderr)
 
 parser = argparse.ArgumentParser(description="Process jinja2 templates")
-parser.add_argument("files", metavar="F", type=str, nargs="+")
-parser.add_argument("--template-search-path", "-s", metavar="T", type=str, action="append")
-parser.add_argument("--dest", "-d", metavar="D", type=str, action="store", default=".")
+parser.add_argument("files", metavar="FILE", type=str, nargs="+")
+parser.add_argument("--template-search-path", "-s", metavar="PATH", action="append")
+parser.add_argument("--dest", "-d", default=".")
 
 if __name__ == "__main__":
     args = parser.parse_args()
