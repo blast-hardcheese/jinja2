@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from errno import EEXIST
 
 import jinja2
 from jinja2 import Environment, FileSystemLoader
@@ -36,5 +37,12 @@ if __name__ == "__main__":
         else:
             print "Writing \"%s\"..." % os.path.realpath(target),
             s = template.render()
+
+            try:
+                os.makedirs(os.path.dirname(target))
+            except OSError as e:
+                if e.errno == EEXIST: pass
+                else: raise
+
             open(target, 'w').write(s)
             print "Done!"
