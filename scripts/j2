@@ -18,6 +18,19 @@ def destination_fname(fname):
     return r
 
 
+def write(s, target):
+    print("Writing \"%s\"... " % os.path.realpath(target), file=sys.stderr, end='')
+
+    try:
+        os.makedirs(os.path.dirname(target))
+    except OSError as e:
+        if e.errno == EEXIST: pass
+        else: raise
+
+    open(target, 'w').write(s)
+
+    print("Done!", file=sys.stderr)
+
 parser = argparse.ArgumentParser(description="Process jinja2 templates")
 parser.add_argument("files", metavar="F", type=str, nargs="+")
 parser.add_argument("--template-search-path", "-s", metavar="T", type=str, action="append")
@@ -38,14 +51,5 @@ if __name__ == "__main__":
         if os.path.realpath(template.filename) == os.path.realpath(target):
             print("ERROR: source \"%s\" and target \"%s\" are the same!" % (fname, target), file=sys.stderr)
         else:
-            print("Writing \"%s\"... " % os.path.realpath(target), file=sys.stderr, end='')
             s = template.render()
-
-            try:
-                os.makedirs(os.path.dirname(target))
-            except OSError as e:
-                if e.errno == EEXIST: pass
-                else: raise
-
-            open(target, 'w').write(s)
-            print("Done!", file=sys.stderr)
+            write(s, target)
