@@ -35,6 +35,7 @@ parser = argparse.ArgumentParser(description="Process jinja2 templates")
 parser.add_argument("files", metavar="FILE", type=str, nargs="+")
 parser.add_argument("--template-search-path", "-s", metavar="PATH", action="append")
 parser.add_argument("--dest", "-d", default=".")
+parser.add_argument("--out", "-o")
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -42,14 +43,21 @@ if __name__ == "__main__":
     files = args.files
     search_path = args.template_search_path or ["."]
     destination = args.dest
+    out = args.out
 
     env = Environment(loader=FileSystemLoader(search_path))
 
     for fname in files:
         template = env.get_template(fname)
-        target = os.path.join(destination, destination_fname(fname))
+        target = destination_fname(fname)
+        if out is not None and out != "-":
+            target = out
+        target = os.path.join(destination, target)
         if os.path.realpath(template.filename) == os.path.realpath(target):
             print("ERROR: source \"%s\" and target \"%s\" are the same!" % (fname, target), file=sys.stderr)
         else:
             s = template.render()
-            write(s, target)
+            if out == "-":
+                print(s, end="")
+            else:
+                write(s, target)
