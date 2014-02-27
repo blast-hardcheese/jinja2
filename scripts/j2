@@ -23,7 +23,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     files = args.files
-    search_path = args.template_search_path
+    search_path = args.template_search_path or ["."]
     destination = args.dest
 
     env = Environment(loader=FileSystemLoader(search_path))
